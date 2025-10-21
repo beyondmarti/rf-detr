@@ -4,7 +4,7 @@
 # Licensed under the Apache License, Version 2.0 [see LICENSE for details]
 # ------------------------------------------------------------------------
 
-import pdb
+
 import sys
 import json
 import os
@@ -18,6 +18,10 @@ import supervision as sv
 import torch
 import torchvision.transforms.functional as F
 from PIL import Image
+
+import pdb
+import logging
+logger = logging.getLogger(__name__)
 
 try:
     torch.set_float32_matmul_precision('high')
@@ -319,6 +323,7 @@ class RFDETR:
             pdb.set_trace()
             if isinstance(predictions, tuple):
                 print("Was instance prediction, tuple")
+                logger.warning("--- WARN: Something in X looks odd ---")
                 if len(predictions) == 3:
                     print("predictions was 3 (GOOD)")
                     predictions = {
