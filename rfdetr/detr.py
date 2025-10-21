@@ -316,15 +316,15 @@ class RFDETR:
             else:
                 predictions = self.model.model(batch_tensor)
             if isinstance(predictions, tuple):
-                print("Was instance prediction, tuple")
+                print("Was instance prediction, tuple", flush=True)
                 if len(predictions) == 3:
-                    print("predictions was 3")
+                    print("predictions was 3", flush=True)
                     predictions = {
                     "pred_logits": predictions[1],
                     "pred_boxes": predictions[0],
                     "pred_masks": predictions[2]}
                 else:
-                    print("predictions was 2")
+                    print("predictions was 2", flush=True)
                     predictions = {
                     "pred_logits": predictions[1],
                     "pred_boxes": predictions[0],
