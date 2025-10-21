@@ -315,20 +315,23 @@ class RFDETR:
                 predictions = self.model.inference_model(batch_tensor.to(dtype=self._optimized_dtype))
             else:
                 predictions = self.model.model(batch_tensor)
-            if isinstance(predictions, tuple):
-                print("Was instance prediction, tuple", file=sys.stderr)
-                if len(predictions) == 3:
-                    print("predictions was 3", file=sys.stderr)
-                    predictions = {
-                    "pred_logits": predictions[1],
-                    "pred_boxes": predictions[0],
-                    "pred_masks": predictions[2]}
+            with open("debug_test.log", "a") as f:
+                if isinstance(predictions, tuple):
+                    f.write("Was instance prediction, tuple")
+                    if len(predictions) == 3:
+                        f.write("predictions was 3 (GOOD)")
+                        predictions = {
+                        "pred_logits": predictions[1],
+                        "pred_boxes": predictions[0],
+                        "pred_masks": predictions[2]}
+                    else:
+                        f.write("predictions was 2 (BAD)")
+                        predictions = {
+                        "pred_logits": predictions[1],
+                        "pred_boxes": predictions[0],
+                        }
                 else:
-                    print("predictions was 2", file=sys.stderr)
-                    predictions = {
-                    "pred_logits": predictions[1],
-                    "pred_boxes": predictions[0],
-                    }
+                    f.write("Wasn't instance prediction, tuple (AWFUL)")
             target_sizes = torch.tensor(orig_sizes, device=self.model.device)
             results = self.model.postprocess(predictions, target_sizes=target_sizes)
 
