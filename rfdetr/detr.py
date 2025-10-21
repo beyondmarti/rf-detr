@@ -19,10 +19,6 @@ import torch
 import torchvision.transforms.functional as F
 from PIL import Image
 
-import pdb
-import logging
-logger = logging.getLogger(__name__)
-
 try:
     torch.set_float32_matmul_precision('high')
 except:
@@ -316,28 +312,31 @@ class RFDETR:
                                      "by calling model.optimize_for_inference(batch_size=<new_batch_size>).")
 
         with torch.inference_mode():
+            abc = 0
             if self._is_optimized_for_inference:
                 predictions = self.model.inference_model(batch_tensor.to(dtype=self._optimized_dtype))
             else:
                 predictions = self.model.model(batch_tensor)
-            pdb.set_trace()
             if isinstance(predictions, tuple):
-                print("Was instance prediction, tuple")
-                logger.warning("--- WARN: Something in X looks odd ---")
+                logger.warning("Was instance prediction, tuple")
+                abc = 123
                 if len(predictions) == 3:
-                    print("predictions was 3 (GOOD)")
+                    logger.warning("predictions was 3 (GOOD)")
+                    abc = 456
                     predictions = {
                     "pred_logits": predictions[1],
                     "pred_boxes": predictions[0],
                     "pred_masks": predictions[2]}
                 else:
-                    print("predictions was 2 (BAD)")
+                    logger.warning("predictions was 2 (BAD)")
+                    abc = 789
                     predictions = {
                     "pred_logits": predictions[1],
                     "pred_boxes": predictions[0],
                     }
             else:
-                print("Wasn't instance prediction, tuple (AWFUL)")
+                logger.warning("Wasn't instance prediction, tuple (AWFUL)")
+                abc = 123
             target_sizes = torch.tensor(orig_sizes, device=self.model.device)
             results = self.model.postprocess(predictions, target_sizes=target_sizes)
 
